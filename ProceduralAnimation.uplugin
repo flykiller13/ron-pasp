@@ -1,0 +1,24 @@
+{
+	"FileVersion": 3,
+	"Version": 1,
+	"VersionName": "1.0",
+	"FriendlyName": "ProceduralAnimation",
+	"Description": "Procedural animation concepts implemented using Unreal Engine's infrastructure.",
+	"Category": "Other",
+	"CreatedBy": "Ron Yoffe",
+	"CreatedByURL": "",
+	"DocsURL": "",
+	"MarketplaceURL": "",
+	"SupportURL": "",
+	"CanContainContent": true,
+	"IsBetaVersion": false,
+	"IsExperimentalVersion": false,
+	"Installed": false,
+	"Modules": [
+		{
+			"Name": "ProceduralAnimation",
+			"Type": "Runtime",
+			"LoadingPhase": "Default"
+		}
+	]
+}
