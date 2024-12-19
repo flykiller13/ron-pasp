@@ -3,7 +3,9 @@
 
 #include "SnakeSection.h"
 
-void ASnakeSection::ConstrainDistance(ASnakeSection* ToSection)
+
+
+void ASnakeSection::ConstrainDistance( ASnakeSection* ToSection )
 {
 	if (!ToSection)
 	{
@@ -12,9 +14,9 @@ void ASnakeSection::ConstrainDistance(ASnakeSection* ToSection)
 
 	FVector Dist = ToSection->GetActorLocation() - GetActorLocation();
 
-	if (Dist.Length() > DesiredDistance)
+	if ( Dist.Length() > DesiredDistance )
 	{
-		FVector NewLocation = GetActorLocation() + (Dist / Dist.Length()) * DesiredDistance;
+		FVector NewLocation = GetActorLocation() + (Dist.GetSafeNormal() * DesiredDistance);
 		ToSection->SetActorLocation( NewLocation );
 	}
 }

@@ -1,5 +1,6 @@
 // Copyright Epic Games, Inc. All Rights Reserved.
 
+using System.IO;
 using UnrealBuildTool;
 
 public class ProceduralAnimation : ModuleRules
@@ -11,14 +12,20 @@ public class ProceduralAnimation : ModuleRules
 		PublicIncludePaths.AddRange(
 			new string[] {
 				// ... add public include paths required here ...
-			}
+				Path.Combine(ModuleDirectory, "Public"),
+                Path.Combine(ModuleDirectory, "Public", "Boids"),
+                Path.Combine(ModuleDirectory, "Public", "Constraints")
+            }
 			);
 				
 		
 		PrivateIncludePaths.AddRange(
 			new string[] {
 				// ... add other private include paths required here ...
-			}
+				Path.Combine(ModuleDirectory, "Private"),
+                Path.Combine(ModuleDirectory, "Private", "Boids"),
+                Path.Combine(ModuleDirectory, "Private", "Constraints")
+            }
 			);
 			
 		

@@ -15,10 +15,10 @@ class PROCEDURALANIMATION_API ASnakeSection : public AStaticMeshActor
 	GENERATED_BODY()
 
 public:
-
 	/** Please add a function description */
 	UFUNCTION( BlueprintCallable, Category = "Default" )
 	void ConstrainDistance( ASnakeSection* ToSection );
+
 
 	/** Please add a function description */
 	UFUNCTION( BlueprintCallable, Category = "Default" )

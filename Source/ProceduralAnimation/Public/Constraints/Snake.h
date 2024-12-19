@@ -30,7 +30,7 @@ public:
 public:
 
 	/** Please add a function description */
-	UFUNCTION( BlueprintCallable )
+	UFUNCTION( BlueprintImplementableEvent, BlueprintCallable )
 	void CreateSections( int32 NumSections );
 
 	/** Please add a variable description */

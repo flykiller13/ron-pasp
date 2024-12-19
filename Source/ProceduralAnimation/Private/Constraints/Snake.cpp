@@ -32,8 +32,4 @@ void ASnake::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 
 }
 
-void ASnake::CreateSections( int32 NumSections )
-{
-	
-}
 
