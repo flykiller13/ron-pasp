@@ -9,7 +9,7 @@
 /**
  * 
  */
-UCLASS()
+UCLASS(ClassGroup=(Custom), meta=(BlueprintSpawnableComponent))
 class PROCEDURALANIMATION_API UObstacleAvoidingBoidComponent : public UBoidMovementComponent
 {
 	GENERATED_BODY()

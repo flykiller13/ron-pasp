@@ -18,7 +18,7 @@ void UObstacleAvoidingBoidComponent::TickComponent( float DeltaTime, ELevelTick 
 
 FVector UObstacleAvoidingBoidComponent::GetUnobstructedDir_Implementation(FHitResult Hit)
 {
-	FVector Offset = Hit.ImpactPoint - GetActorLocation();
+	FVector Offset = Hit.ImpactPoint - Owner->GetActorLocation();
 	float Dot = GetCurrentVelocity().Dot( Offset );
 	FVector UnobstructedDir( 0 );
 
@@ -38,14 +38,14 @@ bool UObstacleAvoidingBoidComponent::IsObstacleAhead_Implementation(FHitResult& 
 {
 	// Trace settings
 	FCollisionQueryParams CollisionParams;
-	CollisionParams.AddIgnoredActor( this );
+	CollisionParams.AddIgnoredActor( Owner );
 	// CollisionParams.bTraceComplex = true;
 
-	FVector TraceStart = GetActorLocation();
-	FVector TraceEnd = GetActorLocation() + CurrentVelocity.GetSafeNormal() * ObstacleAvoidanceRange;
+	FVector TraceStart = Owner->GetActorLocation();
+	FVector TraceEnd = Owner->GetActorLocation() + CurrentVelocity.GetSafeNormal() * ObstacleAvoidanceRange;
 
-	FVector MeshBounds = BoidMesh->GetStaticMesh()->GetBounds().GetBox().GetSize();
-	float SphereRadius = (BoidMesh->GetComponentScale().X * MeshBounds.X) / 2;
+	// FVector MeshBounds = BoidMesh->GetStaticMesh()->GetBounds().GetBox().GetSize();
+	float SphereRadius = 32.f; // (BoidMesh->GetComponentScale().X * MeshBounds.X) / 2;
 	FCollisionShape MySphere = FCollisionShape::MakeSphere( SphereRadius );
 
 	return GetWorld()->SweepSingleByChannel( Hit, TraceStart, TraceEnd, FQuat::Identity,

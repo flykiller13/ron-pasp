@@ -4,10 +4,11 @@
 
 #include "CoreMinimal.h"
 #include "Components/ActorComponent.h"
+#include "FlockManager.h"
 #include "BoidMovementComponent.generated.h"
 
 
-UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
+UCLASS( Blueprintable )
 class PROCEDURALANIMATION_API UBoidMovementComponent : public UActorComponent
 {
 	GENERATED_BODY()
@@ -37,7 +38,7 @@ public:
 	UPROPERTY( EditAnywhere, BlueprintReadOnly, Category = "*Boid|Properties" )
 	float VisionRange = 300.f;
 
-	// The range that the boid will try to keep away from it's perscepted flockmates
+	// The range that the boid will try to keep away from it's perceived flockmates
 	UPROPERTY( EditAnywhere, BlueprintReadWrite, Category = "*Boid|Properties" )
 	float SeparationRange = 130.f;
 
@@ -47,11 +48,11 @@ public:
 	UPROPERTY( EditAnywhere, BlueprintReadWrite, Category = "*Boid|Properties" )
 	bool bOverrideStart;
 
-	// Direction in which the boid will start it's flight (if overriden)
+	// Direction in which the boid will start its flight (if overriden)
 	UPROPERTY( EditAnywhere, BlueprintReadWrite, Category = "*Boid|Properties", meta = (EditCondition = "bOverrideStart") )
 	FVector StartDir;
 
-	// Speed at which the boid will start it's flight (if overriden)
+	// Speed at which the boid will start its flight (if overriden)
 	UPROPERTY( EditAnywhere, BlueprintReadWrite, Category = "*Boid|Properties", meta = (EditCondition = "bOverrideStart") )
 	float StartSpeed = 60.f;
 
@@ -65,7 +66,11 @@ public:
 
 	// The boid manager that keeps reference of the boid.
 	UPROPERTY( VisibleAnywhere, BlueprintReadWrite, Category = "*Boid|Properties", meta = (ExposeOnSpawn = "true") )
-	UBoidManager* BoidManager;
+	UFlockManager* FlockManager;
+
+	// The boid manager that keeps reference of the boid.
+	UPROPERTY( VisibleAnywhere, BlueprintReadWrite, Category = "*Boid|Properties", meta = (ExposeOnSpawn = "true") )
+	int32 FlockID;
 
 	// Actor to which the boids will attract. A lone boid without an attraction point will fly straight forward.
 	UPROPERTY( VisibleAnywhere, BlueprintReadWrite, Category = "*Boid|Properties", meta = (ExposeOnSpawn = "true") )
@@ -95,13 +100,13 @@ public:
 
 	/* Functions */
 
-	/** Returns the average velocity of the boid's immediate flockmates */
-	UFUNCTION( BlueprintNativeEvent, BlueprintPure, BlueprintCallable, Category = "*Boid|Rules" )
-	FVector GetFlockVelocity();
-
 	/** Returns the center of the boid's immediate flockmates */
 	UFUNCTION( BlueprintNativeEvent, BlueprintPure, BlueprintCallable, Category = "*Boid|Rules" )
 	FVector GetOffsetToFlockCenter();
+
+	/** Returns the center of the boid's immediate flockmates */
+	UFUNCTION( BlueprintNativeEvent, BlueprintPure, BlueprintCallable, Category = "*Boid|Rules" )
+	FVector GetOffsetToFlockVelocity();
 
 	/** Returns vector to steer away from the boid's immediate flockmates */
 	UFUNCTION( BlueprintNativeEvent, BlueprintCallable, Category = "*Boid|Rules" )
@@ -115,31 +120,11 @@ public:
 	UFUNCTION( BlueprintPure, BlueprintCallable, Category = "*Boid|Movement" )
 	FVector GetCurrentVelocity();
 
-	/** This is the Boid's tick function. The interval can be controlled with BoidTickTime */
-	UFUNCTION( BlueprintCallable, Category = "*Boid|Movement" )
-	void BoidTick();
-
-	FTimerHandle BoidTimerHandle;
-
-	float BoidTickTime = 0.01f;
-
 	/* DEBUGGING */
-
-	// Draws the velocity of the boid 
-	UFUNCTION( BlueprintNativeEvent, BlueprintCallable, Category = "*Boid|Debugging" )
-	void DrawBoidVelocity();
 
 	// True - Draws the velocity of the boid 
 	UPROPERTY( EditAnywhere, BlueprintReadWrite, Category = "*Boid|Debugging" )
 	bool bDrawBoidVelocity;
-
-	// Draws the center of the perceived flock
-	UFUNCTION( BlueprintNativeEvent, BlueprintCallable, Category = "*Boid|Debugging" )
-	void DrawFlockCenter( FVector Center );
-
-	// True - Draws the center of the perceived flock.
-	UPROPERTY( EditAnywhere, BlueprintReadWrite, Category = "*Boid|Debugging" )
-	bool bDrawFlockCenter;
 
 	// Draws the force applied to steer away from the perceived flock
 	UFUNCTION( BlueprintNativeEvent, BlueprintCallable, Category = "*Boid|Debugging" )
@@ -148,13 +133,5 @@ public:
 	// True - Draws the force applied to steer away from the perceived flock
 	UPROPERTY( EditAnywhere, BlueprintReadWrite, Category = "*Boid|Debugging" )
 	bool bDrawSeparationForce;
-
-	// Draws the perceived flock's velocity
-	UFUNCTION( BlueprintNativeEvent, BlueprintCallable, Category = "*Boid|Debugging" )
-	void DrawFlockVelocity( FVector FlockVelocity );
-
-	// True - Draws the perceived flock's velocity
-	UPROPERTY( EditAnywhere, BlueprintReadWrite, Category = "*Boid|Debugging" )
-	bool bDrawFlockVelocity;
 
 };
