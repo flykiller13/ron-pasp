@@ -3,8 +3,18 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "BoidMovementComponent.h"
 #include "Subsystems/WorldSubsystem.h"
 #include "FlockManager.generated.h"
+
+USTRUCT(Blueprintable, BlueprintType)
+struct FlockData
+{
+	GENERATED_BODY()
+
+	UPROPERTY(BlueprintReadWrite, VisibleAnywhere)
+	TArray<UBoidMovementComponent*> Boids;
+};
 
 /**
  * 
@@ -16,11 +26,19 @@ class PROCEDURALANIMATION_API UFlockManager : public UWorldSubsystem
 
 public:
 	// Draws the center of the perceived flock
-	UFUNCTION( BlueprintNativeEvent, BlueprintCallable, Category = "Debugging" )
-	FVector GetFlockCenter( int32 FlockID, bool bDrawDebug = false );
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
+	FVector GetFlockCenter(int32 FlockID, bool bDrawDebug = false);
 
 	// Draws the perceived flock's velocity
-	UFUNCTION( BlueprintNativeEvent, BlueprintCallable, Category = "Debugging" )
-	FVector GetFlockVelocity( int32 FlockID, bool bDrawDebug = false );
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
+	FVector GetFlockVelocity(int32 FlockID, bool bDrawDebug = false);
 
+	UPROPERTY(BlueprintReadWrite)
+	TMap<int32, FlockData> FlockMap;
+
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
+	void AddFlock(int32 FlockID);
+
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
+	void AddBoid( int32 FlockID, UBoidMovementComponent* Boid);
 };

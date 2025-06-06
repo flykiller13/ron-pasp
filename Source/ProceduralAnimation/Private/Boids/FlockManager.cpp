@@ -20,3 +20,17 @@ FVector UFlockManager::GetFlockVelocity_Implementation(int32 FlockID, bool bDraw
 		DrawDebugDirectionalArrow( GetWorld(), GetFlockCenter(FlockID), GetFlockCenter(FlockID) + Velocity, 1.f, FColor::Yellow );
 	return FVector();
 }
+
+void UFlockManager::AddFlock_Implementation(int32 FlockID)
+{
+	FlockData Flock = FlockData{};
+	
+	FlockMap.Add(FlockID, Flock);
+}
+
+void UFlockManager::AddBoid_Implementation( int32 FlockID, UBoidMovementComponent* Boid)
+{
+	FlockData* Flock = FlockMap.Find(FlockID);
+
+	Flock->Boids.Add(Boid);
+}

@@ -4,9 +4,9 @@
 
 #include "CoreMinimal.h"
 #include "Components/ActorComponent.h"
-#include "FlockManager.h"
 #include "BoidMovementComponent.generated.h"
 
+class UFlockManager;
 
 UCLASS( Blueprintable )
 class PROCEDURALANIMATION_API UBoidMovementComponent : public UActorComponent
