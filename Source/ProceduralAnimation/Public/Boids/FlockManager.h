@@ -4,7 +4,6 @@
 
 #include "CoreMinimal.h"
 #include "BoidMovementComponent.h"
-#include "Subsystems/WorldSubsystem.h"
 #include "FlockManager.generated.h"
 
 USTRUCT(Blueprintable, BlueprintType)
@@ -20,7 +19,7 @@ struct FlockData
  * 
  */
 UCLASS(Blueprintable)
-class PROCEDURALANIMATION_API UFlockManager : public UWorldSubsystem
+class PROCEDURALANIMATION_API UFlockManager : public UGameInstanceSubsystem
 {
 	GENERATED_BODY()
 
@@ -41,4 +40,7 @@ public:
 
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
 	void AddBoid( int32 FlockID, UBoidMovementComponent* Boid);
+
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
+	TArray<UBoidMovementComponent*> GetNearbyBoids(int32 FlockID, UBoidMovementComponent* RequestingBoid, float Radius);
 };
