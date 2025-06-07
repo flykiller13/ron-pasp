@@ -3,7 +3,7 @@
 
 #include "Boids/FlockManager.h"
 
-FVector UFlockManager::GetFlockCenter_Implementation(int32 FlockID, bool bDrawDebug)
+FVector UFlockManager::GetFlockCenter_Implementation(int32 FlockID)
 {
 	FVector Center = FVector::ZeroVector;
 
@@ -16,14 +16,10 @@ FVector UFlockManager::GetFlockCenter_Implementation(int32 FlockID, bool bDrawDe
 
 	Center = Center / Flock->Boids.Num(); // Get average location
 
-	if (bDrawDebug)
-	{
-		DrawDebugSphere(GetWorld(), Center, 10.f, 2, FColor::Cyan);
-	}
 	return Center;
 }
 
-FVector UFlockManager::GetFlockVelocity_Implementation(int32 FlockID, bool bDrawDebug)
+FVector UFlockManager::GetFlockVelocity_Implementation(int32 FlockID)
 {
 	FVector Velocity = FVector::ZeroVector;
 
@@ -35,12 +31,6 @@ FVector UFlockManager::GetFlockVelocity_Implementation(int32 FlockID, bool bDraw
 	}
 
 	Velocity = Velocity / Flock->Boids.Num(); // Get average velocity
-
-	if (bDrawDebug)
-	{
-		DrawDebugDirectionalArrow(GetWorld(), GetFlockCenter(FlockID), GetFlockCenter(FlockID) + Velocity, 1.f,
-		                          FColor::Yellow);
-	}
 
 	return Velocity;
 }

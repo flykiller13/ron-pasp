@@ -31,28 +31,24 @@ public:
 
 	// The current velocity vector of the boid.
 	UPROPERTY(BlueprintReadOnly)
-	FVector CurrentVelocity = FVector(0);
+	FVector CurrentVelocity = FVector::ZeroVector;
+
+	// The current velocity vector of the boid.
+	UPROPERTY(BlueprintReadOnly)
+	FVector SteeringForce = FVector::ZeroVector;
 
 	/* Properties */
-
-	// A float that represents the boid's vision range.
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "*Boid|Properties")
-	float VisionRange = 300.f;
-
-	// The range that the boid will try to keep away from it's perceived flockmates
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "*Boid|Properties")
-	float SeparationRange = 130.f;
-
+	
 	// Minimum speed of the boid.
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "*Boid|Properties")
-	float MinSpeed = 20.f;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "*Boid|Speed")
+	float MinSpeed = 500.f;
 
 	// Maximum speed of the boid.
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "*Boid|Properties")
-	float MaxSpeed = 120.f;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "*Boid|Speed")
+	float MaxSpeed = 10000.f;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "*Boid|Properties")
-	float InterpSpeed = 1.f;
+	float InterpSpeed = 5.f;
 
 	// The boid manager that keeps reference of the boid.
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "*Boid|Properties", meta = (ExposeOnSpawn = "true"))
@@ -69,19 +65,32 @@ public:
 	/* Weights */
 
 	// Weight 0-1 for Alignment rule
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "*Boid|Weights")
-	float AlignmentWeight = 0.f;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "*Boid|Alignment")
+	float AlignmentWeight = 1.0f;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "*Boid|Alignment")
+	FVector AlignmentForce = FVector::ZeroVector;
 
 	// Weight 0-1 for Separation rule
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "*Boid|Weights")
-	float SeparationWeight = 0.f;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "*Boid|Separation")
+	float SeparationWeight = 1.5f;
+
+	// The range that the boid will try to keep away from it's perceived flockmates
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "*Boid|Separation")
+	float SeparationRange = 100.f;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "*Boid|Separation")
+	FVector SeparationForce = FVector::ZeroVector;
 
 	// Weight 0-1 for Cohesion rule
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "*Boid|Weights")
-	float CohesionWeight = 0.f;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "*Boid|Cohesion")
+	float CohesionWeight = 500.f;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "*Boid|Cohesion")
+	FVector CohesionForce = FVector::ZeroVector;
 
 	// Weight 0-1 for the attraction point
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "*Boid|Weights")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "*Boid|Attraction")
 	float AttractionPointWeight = 0.1;
 
 	/* Functions */

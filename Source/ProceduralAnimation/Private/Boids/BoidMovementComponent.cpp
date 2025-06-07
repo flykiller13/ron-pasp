@@ -31,32 +31,28 @@ void UBoidMovementComponent::TickComponent(float DeltaTime, ELevelTick TickType,
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
-	FVector AlignmentForce = FVector::ZeroVector;
-	FVector CohesionForce = FVector::ZeroVector;
-	FVector SeparationForce = FVector::ZeroVector;
+	if (!FlockManager || !Owner) return;
+	
+	AlignmentForce = GetOffsetToFlockVelocity().GetClampedToMaxSize(1.f) * AlignmentWeight;
 
-	if (FlockManager)
-	{
-		AlignmentForce = GetOffsetToFlockVelocity() * AlignmentWeight;
+	CohesionForce = GetOffsetToFlockCenter().GetClampedToMaxSize(1.f) * CohesionWeight;
 
-		CohesionForce = GetOffsetToFlockCenter() * CohesionWeight;
+	SeparationForce = GetSeparationForce().GetClampedToMaxSize(1.f) * SeparationWeight;
 
-		SeparationForce = GetSeparationForce() * SeparationWeight;
-	}
+	// Calculate the steering Force
+	SteeringForce = AlignmentForce + CohesionForce + SeparationForce; 
 
-	CurrentVelocity += AlignmentForce + CohesionForce + SeparationForce; // Add rules to velocity
-	// CurrentVelocity += (GetAttractionPointForce() * AttractionPointWeight);
 	// Add force to move towards the attraction point (if exists)
+	// SteeringForce += (GetAttractionPointForce() * AttractionPointWeight);
+	
+	// Smooth acceleration (interpolate current velocity towards steering force)
+	CurrentVelocity = FMath::VInterpTo(CurrentVelocity, SteeringForce, DeltaTime, InterpSpeed);
 
-	CurrentVelocity = CurrentVelocity.GetClampedToSize(MinSpeed, MaxSpeed); // Clamp velocity to min-max speed
-
-	//Moves the Boid
-	FVector TargetLocation = Owner->GetActorLocation() + CurrentVelocity;
-	FVector NewLocation = FMath::VInterpTo(Owner->GetActorLocation(), TargetLocation, DeltaTime, InterpSpeed);
-
-	// Consume Velocity
-	Owner->SetActorLocation(NewLocation);
-	CurrentVelocity = FVector::ZeroVector;
+	// Clamp to speed limits
+	CurrentVelocity = CurrentVelocity.GetClampedToSize(MinSpeed, MaxSpeed);
+	
+	// Apply Movement
+	Owner->AddActorWorldOffset(CurrentVelocity*DeltaTime);
 }
 
 // Return Current Velocity.
@@ -67,13 +63,17 @@ FVector UBoidMovementComponent::GetCurrentVelocity()
 
 FVector UBoidMovementComponent::GetOffsetToFlockCenter_Implementation()
 {
-	FVector FlockCenter = FlockManager->GetFlockCenter(FlockID, true);
+	if (!FlockManager || !Owner) return FVector::ZeroVector;
+	
+	FVector FlockCenter = FlockManager->GetFlockCenter(FlockID);
 
 	return FlockCenter - Owner->GetActorLocation();
 }
 
 FVector UBoidMovementComponent::GetOffsetToFlockVelocity_Implementation()
 {
+	if (!FlockManager || !Owner) return FVector::ZeroVector;
+	
 	FVector FlockVelocity = FlockManager->GetFlockVelocity(FlockID);
 
 	return FlockVelocity - GetCurrentVelocity();
@@ -82,21 +82,26 @@ FVector UBoidMovementComponent::GetOffsetToFlockVelocity_Implementation()
 // Returns a vector that encourages the Boid to steer AWAY from nearby Boids.
 FVector UBoidMovementComponent::GetSeparationForce_Implementation()
 {
+	if (!FlockManager || !Owner) return FVector::ZeroVector;
+	
 	FVector SeparationDir = FVector::ZeroVector;
-	TArray<UBoidMovementComponent*> NearbyBoids = FlockManager->GetNearbyBoids(FlockID, this, VisionRange);
+	TArray<UBoidMovementComponent*> NearbyBoids = FlockManager->GetNearbyBoids(FlockID, this, SeparationRange);
 	
 	for (auto& Boid : NearbyBoids)
 	{
-		FVector Offset = Boid->Owner->GetActorLocation() - this->Owner->GetActorLocation();
+		if (!IsValid(Boid) || !IsValid(Boid->GetOwner())) continue;
+		
+		FVector ToBoid = Boid->Owner->GetActorLocation() - Owner->GetActorLocation();
+		float DistanceSquared = ToBoid.SizeSquared();
 
-		if (Offset.Length() > 0 && Offset.SquaredLength() <= SeparationRange * SeparationRange)
+		if (DistanceSquared > 0 && DistanceSquared <= FMath::Square(SeparationRange))
 		{
-			Offset = Offset / Offset.Length();
-			SeparationDir -= (Offset);
+			// Force stronger for closer boids
+			float Strength = 1.0f / DistanceSquared;
+			
+			SeparationDir -= ToBoid.GetSafeNormal() * Strength;
 		}
 	}
-
-	// DrawDebugDirectionalArrow(GetWorld(), Owner->GetActorLocation(), Owner->GetActorLocation() + Force, 1.f, FColor::Purple);
 
 	return SeparationDir;
 }

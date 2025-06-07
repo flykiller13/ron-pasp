@@ -26,11 +26,11 @@ class PROCEDURALANIMATION_API UFlockManager : public UGameInstanceSubsystem
 public:
 	// Draws the center of the perceived flock
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
-	FVector GetFlockCenter(int32 FlockID, bool bDrawDebug = false);
+	FVector GetFlockCenter(int32 FlockID);
 
 	// Draws the perceived flock's velocity
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
-	FVector GetFlockVelocity(int32 FlockID, bool bDrawDebug = false);
+	FVector GetFlockVelocity(int32 FlockID);
 
 	UPROPERTY(BlueprintReadWrite)
 	TMap<int32, FlockData> FlockMap;
