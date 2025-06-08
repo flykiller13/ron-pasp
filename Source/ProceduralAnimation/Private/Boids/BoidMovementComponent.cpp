@@ -23,7 +23,7 @@ UBoidMovementComponent::UBoidMovementComponent()
 	
 	CohesionWeight = 5000.f;
 	
-	AttractionPointWeight = 1.f;
+	AttractionPointWeight = 0.f;
 	
 	// Flock ID defaults to 0
 	FlockID = 0;

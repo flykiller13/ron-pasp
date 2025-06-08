@@ -91,7 +91,7 @@ public:
 
 	// Weight 0-1 for the attraction point
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "*Boid|Attraction")
-	float AttractionPointWeight = 0.1f;
+	float AttractionPointWeight = 0.f;
 
 	/* Functions */
 
