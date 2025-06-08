@@ -46,6 +46,9 @@ void UFlockManager::AddBoid_Implementation(int32 FlockID, UBoidMovementComponent
 {
 	FlockData* Flock = FlockMap.Find(FlockID);
 
+	// Set the flock ID of the boid.
+	Boid->FlockID = FlockID;
+
 	Flock->Boids.Add(Boid);
 }
 

@@ -10,6 +10,23 @@
 
 UBoidMovementComponent::UBoidMovementComponent()
 {
+	// Set default values. These are values that I found to work well as a demonstration for the boids.
+	MinSpeed = 1000.f;
+	MaxSpeed = 2000.f;
+	
+	InterpSpeed = 5.f;
+	
+	SeparationRange = 500.f;
+	SeparationWeight = 1500.f;
+	
+	AlignmentWeight = 100.f;
+	
+	CohesionWeight = 5000.f;
+	
+	AttractionPointWeight = 1.f;
+	
+	// Flock ID defaults to 0
+	FlockID = 0;
 }
 
 // Called when the game starts
@@ -37,7 +54,7 @@ void UBoidMovementComponent::TickComponent(float DeltaTime, ELevelTick TickType,
 
 	CohesionForce = GetOffsetToFlockCenter().GetClampedToMaxSize(1.f) * CohesionWeight;
 
-	SeparationForce = GetSeparationForce().GetClampedToMaxSize(1.f) * SeparationWeight;
+	SeparationForce = GetSeparationForce().GetClampedToMaxSize(1.f) * SeparationWeight * FMath::Exp(5.f); // SeparationForce is multiplied by Exp(5) to make it stronger. By default it's very small.
 
 	// Calculate the steering Force
 	SteeringForce = AlignmentForce + CohesionForce + SeparationForce; 
@@ -92,12 +109,12 @@ FVector UBoidMovementComponent::GetSeparationForce_Implementation()
 		if (!IsValid(Boid) || !IsValid(Boid->GetOwner())) continue;
 		
 		FVector ToBoid = Boid->Owner->GetActorLocation() - Owner->GetActorLocation();
-		float DistanceSquared = ToBoid.SizeSquared();
+		float Distance = ToBoid.Size();
 
-		if (DistanceSquared > 0 && DistanceSquared <= FMath::Square(SeparationRange))
+		if (Distance > 0 && Distance <= SeparationRange)
 		{
 			// Force stronger for closer boids
-			float Strength = 1.0f / DistanceSquared;
+			float Strength = 1.0f / Distance;
 			
 			SeparationDir -= ToBoid.GetSafeNormal() * Strength;
 		}
